@@ -1,10 +1,41 @@
 ﻿@page "/todo"
 @inject IJSRuntime JS
+@using System.Text.Json;
+@using System.Text.Json.Serialization;
+
 
 
 <h1>Welcome ToDo page - here we will consume the new API</h1>
 
-<h3>@jsonData</h3>
+@*<h3>@jsonData</h3>*@
+
+@if (ToDolist == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Message</th>
+              
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var todo in ToDolist)
+            {
+                <tr>
+                    <td>@todo.id</td>
+                    <td>@todo.name</td>
+                    <td>@todo.message</td>                    
+                </tr>
+            }
+        </tbody>
+    </table>
+}
 
 <p role="status">Current count: @count</p>
 <button class="btn btn-primary" @onclick="AddToDo">Click me</button>
@@ -13,12 +44,14 @@
 @code {
     private int count = 0;
     private string jsonData;
+    private List<ToDoItem> ToDolist;
 
     private async void AddToDo()
     {
         count++;
         HttpClient httpClient = new HttpClient();
         jsonData = await httpClient.GetStringAsync("https://pcso-rverdera-backend.azurewebsites.net/todoitems");
+        ToDolist = JsonSerializer.Deserialize<List<ToDoItem>>(jsonData);
         StateHasChanged();
     }
     private async void InvokeJavaScript()
@@ -26,4 +59,16 @@
         await JS.InvokeVoidAsync("DeleteCache");
         await JS.InvokeVoidAsync("HelloAlert");
     }
+
+    // Root myDeserializedClass = JsonConvert.DeserializeObject<List<Root>>(myJsonResponse);
+    public class ToDoItem
+    {
+        public int id { get; set; }
+        public string name { get; set; }
+        public bool isComplete { get; set; }
+        public string message { get; set; }
+        public DateTime created { get; set; }
+    }
+
+
 }
