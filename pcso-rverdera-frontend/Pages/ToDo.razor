@@ -4,16 +4,22 @@
 
 <h1>Welcome ToDo page - here we will consume the new API</h1>
 
+<h3>@jsonData</h3>
+
 <p role="status">Current count: @count</p>
 <button class="btn btn-primary" @onclick="AddToDo">Click me</button>
 <button class="btn btn-primary" @onclick="InvokeJavaScript">Invoke JavaScript</button>
 
 @code {
     private int count = 0;
+    private string jsonData;
 
-    private void AddToDo()
+    private async void AddToDo()
     {
         count++;
+        HttpClient httpClient = new HttpClient();
+        jsonData = await httpClient.GetStringAsync("https://pcso-rverdera-backend.azurewebsites.net/todoitems");
+        StateHasChanged();
     }
     private async void InvokeJavaScript()
     {
