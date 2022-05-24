@@ -2,6 +2,7 @@
 @inject IJSRuntime JS
 @using System.Text.Json;
 @using System.Text.Json.Serialization;
+@using System.Net.Http.Headers
 
 
 
@@ -18,24 +19,32 @@ else
     <table class="table">
         <thead>
             <tr>
-                <th>ID</th>
+
                 <th>Name</th>
                 <th>Message</th>
-              
+                <th>Created</th>
+
             </tr>
         </thead>
         <tbody>
             @foreach (var todo in ToDolist)
             {
                 <tr>
-                    <td>@todo.id</td>
+
                     <td>@todo.name</td>
-                    <td>@todo.message</td>                    
+                    <td>@todo.message</td>
+                    <td>@todo.created</td>
                 </tr>
             }
         </tbody>
     </table>
 }
+
+<input @bind="name" placeholder="type name" />
+<input @bind="message" placeholder="type message" />
+<br>
+<br>
+
 
 <p role="status">Current count: @count</p>
 <button class="btn btn-primary" @onclick="AddToDo">Click me</button>
@@ -46,12 +55,32 @@ else
     private string jsonData;
     private List<ToDoItem> ToDolist;
 
+    private string name;
+    private string message;
+
     private async void AddToDo()
     {
         count++;
         HttpClient httpClient = new HttpClient();
+
+        ToDoItem todoItemPost = new ToDoItem
+            {
+                message = message,
+                name = name
+            };
+        string myContent = JsonSerializer.Serialize(todoItemPost);
+        byte[] buffer = System.Text.Encoding.UTF8.GetBytes(myContent);
+        ByteArrayContent byteContent = new ByteArrayContent(buffer);
+        byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+        await httpClient.PostAsync("https://pcso-rverdera-backend.azurewebsites.net/todoitems", byteContent);
+
+
         jsonData = await httpClient.GetStringAsync("https://pcso-rverdera-backend.azurewebsites.net/todoitems");
+
         ToDolist = JsonSerializer.Deserialize<List<ToDoItem>>(jsonData);
+        name = null;
+        message = null;
         StateHasChanged();
     }
     private async void InvokeJavaScript()
@@ -59,15 +88,14 @@ else
         await JS.InvokeVoidAsync("DeleteCache");
         await JS.InvokeVoidAsync("HelloAlert");
     }
-
-    // Root myDeserializedClass = JsonConvert.DeserializeObject<List<Root>>(myJsonResponse);
+   
     public class ToDoItem
     {
         public int id { get; set; }
         public string name { get; set; }
         public bool isComplete { get; set; }
         public string message { get; set; }
-        public DateTime created { get; set; }
+        public DateTime created { get; set; } = DateTime.Now;
     }
 
 
