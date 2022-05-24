@@ -49,6 +49,7 @@ else
 <p role="status">Current count: @count</p>
 <button class="btn btn-primary" @onclick="AddToDo">Click me</button>
 <button class="btn btn-primary" @onclick="InvokeJavaScript">Invoke JavaScript</button>
+<button class="btn btn-primary" @onclick="DeleteAll">Delete All</button>
 
 @code {
     private int count = 0;
@@ -58,8 +59,17 @@ else
     private string name;
     private string message;
 
+    private async void DeleteAll()
+    {
+        HttpClient httpClient = new HttpClient();
+        await httpClient.DeleteAsync("https://pcso-rverdera-backend.azurewebsites.net/todoitems");
+        await GetListAsync();
+        StateHasChanged();
+    }
+
     private async void AddToDo()
     {
+        // Now we want to use our Web API
         count++;
         HttpClient httpClient = new HttpClient();
 
@@ -72,23 +82,31 @@ else
         byte[] buffer = System.Text.Encoding.UTF8.GetBytes(myContent);
         ByteArrayContent byteContent = new ByteArrayContent(buffer);
         byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
         await httpClient.PostAsync("https://pcso-rverdera-backend.azurewebsites.net/todoitems", byteContent);
 
+        await GetListAsync();
+
+        StateHasChanged();
+    }
+
+    private async Task GetListAsync()
+    {
+        HttpClient httpClient = new HttpClient();
 
         jsonData = await httpClient.GetStringAsync("https://pcso-rverdera-backend.azurewebsites.net/todoitems");
 
         ToDolist = JsonSerializer.Deserialize<List<ToDoItem>>(jsonData);
         name = null;
         message = null;
-        StateHasChanged();
     }
+
+
     private async void InvokeJavaScript()
     {
         await JS.InvokeVoidAsync("DeleteCache");
         await JS.InvokeVoidAsync("HelloAlert");
     }
-   
+
     public class ToDoItem
     {
         public int id { get; set; }
