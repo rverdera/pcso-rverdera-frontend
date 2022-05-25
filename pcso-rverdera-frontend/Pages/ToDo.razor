@@ -40,17 +40,38 @@ else
     </table>
 }
 
-<input @bind="name" placeholder="type name" />
+@*<input @bind="name" placeholder="type name" />
 <input @bind="message" placeholder="type message" />
 <br>
 <br>
-
 
 <p role="status">Current count: @count</p>
 <button class="btn btn-primary" @onclick="AddToDo">Click me</button>
 <button class="btn btn-primary" @onclick="InvokeJavaScript">Invoke JavaScript</button>
 <button class="btn btn-primary" @onclick="DeleteAll">Delete All</button>
-<MudButton Variant="Variant.Filled" Color="Color.Primary">Primary</MudButton>
+<MudButton Variant="Variant.Filled" Color="Color.Primary">Primary</MudButton>*@
+
+<MudTextField @bind-Value="name" Label="Name" Variant="Variant.Outlined"></MudTextField>
+<MudTextField @bind-Value="message" Label="Message" Variant="Variant.Outlined"></MudTextField>
+
+ <br><br>
+
+ <MudButton Variant="Variant.Filled" 
+            EndIcon="@Icons.Material.Filled.Send" 
+            OnClick="AddToDo"
+            Color="Color.Primary">Add</MudButton>
+
+ <MudButton Variant="Variant.Filled" 
+            EndIcon="@Icons.Material.Filled.Send" 
+            OnClick="InvokeJavaScript"
+            Color="Color.Primary">Update App</MudButton>
+
+<MudButton Variant="Variant.Filled" 
+            EndIcon="@Icons.Material.Filled.Send"
+            OnClick="DeleteAll"
+            Color="Color.Primary">Delete List</MudButton>
+
+
 
 @code {
     private int count = 0;
