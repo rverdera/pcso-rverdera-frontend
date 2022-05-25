@@ -4,44 +4,27 @@
 <MudDialogProvider />
 <MudSnackbarProvider />
 
-@*
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
-
-    <main>
-        <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-        </div>
-
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-
-</div>*@
-
 <MudLayout>
     <MudAppBar>
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
         My Application
     </MudAppBar>
     <MudDrawer @bind-Open="@_drawerOpen">
-        <NavMenu />
+        
+        <NavMenu/>
+
     </MudDrawer>
 
-    <MudMainContent>
-        @Body
+    <MudMainContent >
+
+          <MudContainer MaxWidth="MaxWidth.Large" Class="my-2 pt-4">
+            @Body
+           </MudContainer>
+
     </MudMainContent>
 
-   @* <MudMainContent>
-        <MudContainer MaxWidth="MaxWidth.Medium">
-            @Body
-        </MudContainer>
-    </MudMainContent>*@
-
 </MudLayout>
+
 @code {
     bool _drawerOpen = true;
 
@@ -50,8 +33,3 @@
         _drawerOpen = !_drawerOpen;
     }
 }
-
-
-
-
-

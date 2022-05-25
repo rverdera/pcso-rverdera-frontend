@@ -4,13 +4,11 @@
 @using System.Text.Json.Serialization;
 @using System.Net.Http.Headers
 
+<h1>Welcome ToDo Page</h1>
+<!--h3>@jsonData</h3-->
 
 
-<h1>Welcome ToDo page - here we will consume the new API</h1>
-
-@*<h3>@jsonData</h3>*@
-
-@if (ToDolist == null)
+@if (todoList == null)
 {
     <p><em>Loading...</em></p>
 }
@@ -19,18 +17,15 @@ else
     <table class="table">
         <thead>
             <tr>
-
                 <th>Name</th>
                 <th>Message</th>
                 <th>Created</th>
-
             </tr>
         </thead>
         <tbody>
-            @foreach (var todo in ToDolist)
+            @foreach (var todo in todoList)
             {
                 <tr>
-
                     <td>@todo.name</td>
                     <td>@todo.message</td>
                     <td>@todo.created</td>
@@ -40,21 +35,10 @@ else
     </table>
 }
 
-@*<input @bind="name" placeholder="type name" />
-<input @bind="message" placeholder="type message" />
-<br>
-<br>
-
-<p role="status">Current count: @count</p>
-<button class="btn btn-primary" @onclick="AddToDo">Click me</button>
-<button class="btn btn-primary" @onclick="InvokeJavaScript">Invoke JavaScript</button>
-<button class="btn btn-primary" @onclick="DeleteAll">Delete All</button>
-<MudButton Variant="Variant.Filled" Color="Color.Primary">Primary</MudButton>*@
-
 <MudTextField @bind-Value="name" Label="Name" Variant="Variant.Outlined"></MudTextField>
 <MudTextField @bind-Value="message" Label="Message" Variant="Variant.Outlined"></MudTextField>
 
- <br><br>
+ <br>
 
  <MudButton Variant="Variant.Filled" 
             EndIcon="@Icons.Material.Filled.Send" 
@@ -71,12 +55,10 @@ else
             OnClick="DeleteAll"
             Color="Color.Primary">Delete List</MudButton>
 
-
-
 @code {
     private int count = 0;
     private string jsonData;
-    private List<ToDoItem> ToDolist;
+    private List<ToDoItem> todoList;
 
     private string name;
     private string message;
@@ -84,7 +66,7 @@ else
     private async void DeleteAll()
     {
         HttpClient httpClient = new HttpClient();
-        await httpClient.DeleteAsync("https://pcso-rverdera-backend.azurewebsites.net/todoitems");
+        await httpClient.DeleteAsync("https://pcso-ali-backend.azurewebsites.net/todoitems");
         await GetListAsync();
         StateHasChanged();
     }
@@ -104,7 +86,7 @@ else
         byte[] buffer = System.Text.Encoding.UTF8.GetBytes(myContent);
         ByteArrayContent byteContent = new ByteArrayContent(buffer);
         byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-        await httpClient.PostAsync("https://pcso-rverdera-backend.azurewebsites.net/todoitems", byteContent);
+        await httpClient.PostAsync("https://pcso-ali-backend.azurewebsites.net/todoitems", byteContent);
 
         await GetListAsync();
 
@@ -115,13 +97,12 @@ else
     {
         HttpClient httpClient = new HttpClient();
 
-        jsonData = await httpClient.GetStringAsync("https://pcso-rverdera-backend.azurewebsites.net/todoitems");
+        jsonData = await httpClient.GetStringAsync("https://pcso-ali-backend.azurewebsites.net/todoitems");
 
-        ToDolist = JsonSerializer.Deserialize<List<ToDoItem>>(jsonData);
+        todoList = JsonSerializer.Deserialize<List<ToDoItem>>(jsonData);
         name = null;
         message = null;
     }
-
 
     private async void InvokeJavaScript()
     {
@@ -135,8 +116,6 @@ else
         public string name { get; set; }
         public bool isComplete { get; set; }
         public string message { get; set; }
-        public DateTime created { get; set; } = DateTime.Now;
+        public DateTime created { get; set; }
     }
-
-
 }
