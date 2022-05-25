@@ -1,4 +1,4 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@*<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">pcso-rverdera-frontend</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
@@ -43,3 +43,9 @@
         collapseNavMenu = !collapseNavMenu;
     }
 }
+*@
+
+<MudNavMenu>
+    <MudNavLink Href="/" Match="NavLinkMatch.All">Dashboard</MudNavLink>
+    <MudNavLink Href="/ToDo" Match="NavLinkMatch.Prefix">ToDo</MudNavLink>    
+</MudNavMenu>
