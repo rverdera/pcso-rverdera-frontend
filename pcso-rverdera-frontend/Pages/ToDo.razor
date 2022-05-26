@@ -57,7 +57,7 @@
     private async void DeleteAll()
     {
         HttpClient httpClient = new HttpClient();
-        await httpClient.DeleteAsync("https://pcso-rverdera-backend.azurewebsites.net/todoitems");
+        await httpClient.DeleteAsync("https://localhost:7130/todoitems");
         await GetListAsync();
         StateHasChanged();
     }
@@ -77,7 +77,7 @@
         byte[] buffer = System.Text.Encoding.UTF8.GetBytes(myContent);
         ByteArrayContent byteContent = new ByteArrayContent(buffer);
         byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-        await httpClient.PostAsync("https://pcso-rverdera-backend.azurewebsites.net/todoitems", byteContent);
+        await httpClient.PostAsync("https://localhost:7130/todoitems", byteContent);
 
         await GetListAsync();
 
@@ -88,7 +88,8 @@
     {
         HttpClient httpClient = new HttpClient();
 
-        jsonData = await httpClient.GetStringAsync("https://pcso-rverdera-backend.azurewebsites.net/todoitems");
+        //jsonData = await httpClient.GetStringAsync("https://pcso-rverdera-backend.azurewebsites.net/todoitems");
+        jsonData = await httpClient.GetStringAsync("https://localhost:7130/todoitems");
 
         todoList = JsonSerializer.Deserialize<List<ToDoItem>>(jsonData);
         message = null;
